@@ -51,7 +51,7 @@ class UserAdmin(BaseUserAdmin):
     list_filter = ('is_admin', )
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
-        ('Персональная информация', {'fields': ('first_name', 'last_name',)}),
+        ('Персональная информация', {'fields': ('first_name', 'last_name', 'balance')}),
         ('Доступ', {'fields': ('is_admin', 'is_active')})
     )
     add_fieldsets = (
@@ -66,8 +66,9 @@ class UserAdmin(BaseUserAdmin):
 
 
 class MyModelAdmin(AdminVideoMixin, admin.ModelAdmin):
-    list_display = ('user', 'price')
-    list_filter = ('price',)
+    list_display = ('user', 'price', 'date')
+    list_filter = ('price', 'user', 'date')
+    ordering = ('date',)
 
 
 admin.site.register(Movie, MyModelAdmin)

@@ -1,4 +1,4 @@
-import httplib2
+import httplib2, bootstrap3
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
@@ -11,6 +11,11 @@ from .forms import MovieForm
 from .models import Movie, User
 
 
+def index(request):
+	movie = Movie.objects.all()
+	return render(request, 'index.html', {'movie': movie})
+
+
 def wall(request, user_id):
 	movie = Movie.objects.filter(user=user_id)
 	return render(request, 'wall.html', {'movie': movie})
@@ -19,7 +24,17 @@ def wall(request, user_id):
 # Воспроизведение видео
 def play_movie(request, video_id):
 	movie = Movie.objects.get(id=video_id)
-	return render(request, 'movie.html', {'movie': movie})
+	if request.user.balance >= movie.price:
+		user = User.objects.get(id=request.user.id)
+		user.balance = user.balance-movie.price
+		user.save()
+		user = movie.user
+		user.balance = user.balance+movie.price
+		user.save()
+		return render(request, 'movie.html', {'movie': movie})
+	else:
+		error = 'На вашем счете недостаточно средств.'
+		return render(request, 'error.html', {'error': error})
 
 
 # Функция определяет какую ссылку вставил пользователь, и загружает по ней превью
@@ -63,3 +78,4 @@ class LogoutView(View):
 		logout(request)
 
 		return HttpResponseRedirect("/")
+

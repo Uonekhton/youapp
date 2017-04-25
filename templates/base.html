@@ -14,15 +14,16 @@
         <nav class="navbar navbar-default navbar-static-top">
             <div class="container">
             <div class="navbar-header">
-                <a href="#" class="navbar-brand">YouApp</a> </div>
+                <a href="{% url 'index' %}" class="navbar-brand">YouApp</a> </div>
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-6">
                <ul class="nav navbar-nav navbar-right">
                    {% if user.is_authenticated %}
-                   <li><a href="{% url 'add' %}">Добавить видео</a></li>
+                   <li><a href="{% url 'add' %}"  data-toggle="modal" data-target="#myModal">Добавить видео</a></li>
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ user.email }} <span class="caret"></span></a>
           <ul class="dropdown-menu">
             <li><a href="#">Баланс: {{ user.balance }}</a></li>
+            <li><a href="{% url 'wall' user_id=user.id %}">Мои видеозаписи</a></li>
             <li><a href="#">Изменить пароль</a></li>
             <li role="separator" class="divider"></li>
             <li><a href="{% url 'logout' %}">Выйти</a></li>
@@ -31,7 +32,7 @@
       </ul>
                 {% else %}
                    <li><a href="{% url 'register' %}" data-toggle="modal" data-target="#myModal">Регистрация</a></li>
-                   <li><a href="{% url 'auth' %}" data-toggle="modal" data-target="#myModal">Войти</a></li>
+                   <li><a href="/accounts/login" data-toggle="modal" data-target="#myModal">Войти</a></li>
                 {% endif %}
             </div></div></nav>
         <div class="container">

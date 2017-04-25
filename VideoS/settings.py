@@ -121,6 +121,10 @@ MEDIA_URL = '/media/'
 # Django registration
 ACCOUNT_ACTIVATION_DAYS = 7
 REGISTRATION_OPEN = True
+EGISTRATION_AUTO_LOGIN = True
+
+LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = '/login/'
 
 AUTH_USER_EMAIL_UNIQUE = True
 EMAIL_HOST = 'smtp.gmail.com'

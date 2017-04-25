@@ -4,10 +4,11 @@ from django.conf import settings
 from django.conf.urls.static import static
 from registration.backends.hmac.views import RegistrationView
 from youapp.forms import MyCustomUserForm
-from youapp.views import wall, add_movie, play_movie, LogoutView
+from youapp.views import index, wall, add_movie, play_movie, LogoutView
 
 
 urlpatterns = [
+	url(r'^$', index,  name='index'),
 	url(r'^admin/', admin.site.urls),
 	url(r'^logout/$', LogoutView.as_view(), name='logout'),
 	url(r'^auth/$', LogoutView.as_view(), name='auth'),

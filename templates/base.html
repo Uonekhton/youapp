@@ -1,10 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-test
-</body>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>YouApp</title>
+    {% load bootstrap3 %}
+    {% bootstrap_css %}
+      <script src="{% bootstrap_jquery_url %}"></script>
+  {% bootstrap_javascript %}
+  </head>
+  <body>
+        <nav class="navbar navbar-default navbar-static-top">
+            <div class="container">
+            <div class="navbar-header">
+                <a href="#" class="navbar-brand">YouApp</a> </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-6">
+               <ul class="nav navbar-nav navbar-right">
+                   {% if user.is_authenticated %}
+                   <li><a href="{% url 'add' %}">Добавить видео</a></li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ user.email }} <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="#">Баланс: {{ user.balance }}</a></li>
+            <li><a href="#">Изменить пароль</a></li>
+            <li role="separator" class="divider"></li>
+            <li><a href="{% url 'logout' %}">Выйти</a></li>
+          </ul>
+        </li>
+      </ul>
+                {% else %}
+                   <li><a href="{% url 'register' %}" data-toggle="modal" data-target="#myModal">Регистрация</a></li>
+                   <li><a href="{% url 'auth' %}" data-toggle="modal" data-target="#myModal">Войти</a></li>
+                {% endif %}
+            </div></div></nav>
+        <div class="container">
+        <div class="row">
+            {% block content %}
+            {% endblock %}
+            </div>
+</div>
+  <!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+
+    </div>
+  </div>
+</div>
+  </body>
 </html>

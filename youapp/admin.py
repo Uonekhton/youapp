@@ -2,6 +2,8 @@ from django import forms
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
+from embed_video.admin import AdminVideoMixin
+from .models import Movie
 
 from .models import User
 from django.contrib.auth import get_user_model
@@ -63,4 +65,10 @@ class UserAdmin(BaseUserAdmin):
     filter_horizontal = ()
 
 
+class MyModelAdmin(AdminVideoMixin, admin.ModelAdmin):
+    list_display = ('user', 'price')
+    list_filter = ('price',)
+
+
+admin.site.register(Movie, MyModelAdmin)
 admin.site.register(User, UserAdmin)

@@ -1,16 +1,14 @@
-{% block content %}
-<h1>Регистрация</h1>
-<form method="post" action="">
+    {% load bootstrap3 %}
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="createComment_title">Добавить видео</h4>
+      </div>
+      <div class="modal-body">
+<form method="post" action="{% url 'register' %}" class="form">
 {% csrf_token %}
 <dl class="register">
-{% for field in form %}
-    <dt>{{ field.label_tag }}</dt>
-    <dd class="clearfix">{{ field }}
-    {% if field.help_text %}<div class="clearfix">{{ field.help_text }}</div>{% endif %}
-    {% if field.errors %}<div class="myerrors clearfix">{{ field.errors }}</div>{% endif %}
-    </dd>
-{% endfor %}
+{% bootstrap_form form %}
 </dl>
-<input type="submit" value="Зарегистрироваться" class="clearfix">
+<button type="submit" value="Зарегистрироваться" class="clearfix btn btn-primary">Зарегистрироваться</button>
 </form>
-{% endblock %}
+      </div>

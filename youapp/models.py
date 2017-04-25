@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.core.mail import send_mail
+from embed_video.fields import EmbedVideoField
+
 
 class UserManager(BaseUserManager):
     def create_user(self, email, password=None):
@@ -32,10 +34,10 @@ class User(AbstractBaseUser):
     balance = models.DecimalField(max_digits=2, decimal_places=0, default=0)
     first_name = models.CharField(verbose_name='Имя', max_length=50, blank=True)
     last_name = models.CharField(verbose_name='Фамилия', max_length=50, blank=True)
-    is_active = models.BooleanField(default=True, verbose_name='Активный')
+    is_active = models.BooleanField(verbose_name='Активный')
     is_admin = models.BooleanField(default=False, verbose_name='Администратор')
 
-    object = UserManager()
+    objects = UserManager()
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
@@ -70,3 +72,14 @@ class User(AbstractBaseUser):
     class Meta:
         verbose_name = 'Пользователь'
         verbose_name_plural = 'Пользователи'
+
+
+class Movie(models.Model):
+    video = EmbedVideoField(verbose_name='Ссылка')
+    price = models.DecimalField(max_digits=3, decimal_places=0, default=0, verbose_name='Цена')
+    user = models.ForeignKey('User')
+    thumbnail = models.CharField(verbose_name='thumbnail_url', max_length=255, blank=True)
+
+    class Meta:
+        verbose_name = 'Видео'
+        verbose_name_plural = 'Видео'

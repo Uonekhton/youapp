@@ -26,6 +26,7 @@ INSTALLED_APPS = [
 	'django.contrib.messages',
 	'django.contrib.staticfiles',
 	'bootstrap3',
+	'pagination_bootstrap',
 	'registration',
 	'embed_video',
 	'youapp',
@@ -39,6 +40,7 @@ MIDDLEWARE = [
 	'django.contrib.auth.middleware.AuthenticationMiddleware',
 	'django.contrib.messages.middleware.MessageMiddleware',
 	'django.middleware.clickjacking.XFrameOptionsMiddleware',
+	'pagination_bootstrap.middleware.PaginationMiddleware'
 ]
 
 ROOT_URLCONF = 'VideoS.urls'
@@ -54,6 +56,8 @@ TEMPLATES = [
 				'django.template.context_processors.debug',
 				'django.template.context_processors.request',
 				'django.contrib.auth.context_processors.auth',
+				"django.template.context_processors.i18n",
+				"django.template.context_processors.media",
 				'django.contrib.messages.context_processors.messages',
 			],
 		},
@@ -121,7 +125,7 @@ MEDIA_URL = '/media/'
 # Django registration
 ACCOUNT_ACTIVATION_DAYS = 7
 REGISTRATION_OPEN = True
-EGISTRATION_AUTO_LOGIN = True
+REGISTRATION_AUTO_LOGIN = True
 
 LOGIN_REDIRECT_URL = '/'
 LOGIN_URL = '/login/'

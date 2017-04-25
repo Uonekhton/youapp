@@ -1,10 +1,13 @@
 {% extends "base.html" %}
 {% block content %}
-{% for item in movie %}
-    <div class="col-xs-6 col-md-3">
-        <a href="/movie/{{ item.id }}" class="thumbnail" data-toggle="modal" data-target="#myModal">
-            <img src="{{ item.thumbnail }}">
-        </a>
-    </div>
+    {% load pagination_tags %}
+    {% autopaginate movie 2 %}
+        {% for item in movie %}
+        <div class="col-xs-6 col-md-3">
+            <a href="/movie/{{ item.id }}" class="thumbnail" data-toggle="modal" data-target="#myModal">
+                <img src="{{ item.thumbnail }}">
+            </a>
+        </div>
 {% endfor %}
+{% paginate %}
 {% endblock %}

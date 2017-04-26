@@ -1,8 +1,8 @@
-import httplib2, bootstrap3
+import httplib2, requests, json
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
-from django.contrib.auth import logout
+from django.contrib.auth import logout, views
 from django.views.generic.base import View
 from django.http import HttpResponseRedirect
 from random import choice
@@ -21,7 +21,8 @@ def wall(request, user_id):
 	return render(request, 'wall.html', {'movie': movie})
 
 
-# Воспроизведение видео
+# Воспроизведение видео AIzaSyBNuds75Nnm16QKFGfFhLAQqEJlCuWn3a8
+@login_required
 def play_movie(request, video_id):
 	movie = Movie.objects.get(id=video_id)
 	if request.user.balance >= movie.price:
@@ -40,17 +41,21 @@ def play_movie(request, video_id):
 # Функция определяет какую ссылку вставил пользователь, и загружает по ней превью
 def thumb_down(url):
 	if url.find('=') != -1:
-		url2 = 'http://img.youtube.com/vi/%s/0.jpg' % url.split('=')[1]
-		name = ''.join(choice(ascii_uppercase) for i in range(5))+url.split('=')[1]
+		url2 = 'http://img.youtube.com/vi/%s/mqdefault.jpg' % url.split('=')[1]
+		name = url.split('=')[1]
 	else:
-		url2 = 'http://img.youtube.com/vi/%s/0.jpg' % url.replace('https://youtu.be/', '')
-		name = ''.join(choice(ascii_uppercase) for i in range(5))+url.replace('https://youtu.be/', '')
+		url2 = 'http://img.youtube.com/vi/%s/mqdefault.jpg' % url.replace('https://youtu.be/', '')
+		name = url.replace('https://youtu.be/', '')
+	url = requests.get(
+		'https://www.googleapis.com/youtube/v3/videos?part=snippet&fields=items(snippet(title))&id=%s&key=AIzaSyBlhjhmXF2M9ZhobNSSgWHloEn5TX2aceU' % name)
+	title = url.text.split('"title": "')[1].split('"\n')
+	name = ''.join(choice(ascii_uppercase) for i in range(5)) + name
 	h = httplib2.Http('.cache')
 	response, content = h.request(url2)
 	out = open('%s/img/%s.jpg' % (settings.STATICFILES_DIRS[1], name), 'wb')
 	out.write(content)
 	out.close()
-	return '/static/img/%s.jpg' % name
+	return {'thumb' :'/static/img/%s.jpg' % name, 'title': title[0]}
 
 
 # Добавление видео
@@ -62,7 +67,9 @@ def add_movie(request):
 			user = User.objects.get(id=request.user.id)
 			form_valid = form.save(commit=False)
 			form_valid.user = user
-			form_valid.thumbnail = thumb_down(form_valid.video)
+			gg = thumb_down(form_valid.video)
+			form_valid.thumbnail = gg['thumb']
+			form_valid.title = gg['title']
 			form_valid.save()
 			return redirect('/wall/%s' % user.id)
 		else:

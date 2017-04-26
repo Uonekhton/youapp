@@ -109,6 +109,7 @@ USE_L10N = True
 
 USE_TZ = True
 
+DATE_FORMAT = 'd.m.Y'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
@@ -121,6 +122,8 @@ STATICFILES_DIRS = [
 ]
 MEDIA_URL = '/media/'
 
+# Количество роликов на одной странице
+PAGINATION_DEFAULT_PAGINATION = 12
 
 # Django registration
 ACCOUNT_ACTIVATION_DAYS = 7

@@ -7,12 +7,27 @@
     <title>YouApp</title>
     {% load bootstrap3 %}
     {% bootstrap_css %}
+      <script src="{% bootstrap_jquery_url %}"></script>
+      {% bootstrap_javascript %}
+      <script type="text/javascript">
+          $(document.body).on('hidden.bs.modal', function () {
+            $('#myModal').removeData('bs.modal')
+          });
+
+          $(document).on('hidden.bs.modal', function (e) {
+              $(e.target).removeData('bs.modal');
+          });
+      </script>
   </head>
   <body>
         <nav class="navbar navbar-default navbar-static-top">
             <div class="container">
             <div class="navbar-header">
                 <a href="{% url 'index' %}" class="navbar-brand">YouApp</a> </div>
+            <ul class="nav navbar-nav">
+                <li><a href="/">Главная</a></li>
+                <li><a href="#">Link</a></li>
+                <li><a href="#">Link</a></li> </ul>
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-6">
                <ul class="nav navbar-nav navbar-right">
                    {% if user.is_authenticated %}
@@ -22,25 +37,23 @@
           <ul class="dropdown-menu">
             <li><a href="#">Баланс: {{ user.balance }}</a></li>
             <li><a href="{% url 'wall' user_id=user.id %}">Мои видеозаписи</a></li>
-            <li><a href="#">Изменить пароль</a></li>
+            <li><a href="{% url 'change-password'%}"  data-toggle="modal" data-target="#myModal">Изменить пароль</a></li>
             <li role="separator" class="divider"></li>
             <li><a href="{% url 'logout' %}">Выйти</a></li>
           </ul>
         </li>
       </ul>
                 {% else %}
-                   <li><a href="{% url 'register' %}" data-toggle="modal" data-target="#myModal">Регистрация</a></li>
-                   <li><a href="/accounts/login" data-toggle="modal" data-target="#myModal">Войти</a></li>
+                   <li><a href="{% url 'register' %}" data-toggle="modal" data-target="#myModal" data-modal-callback="reload">Регистрация</a></li>
+                   <li><a href="/accounts/login" data-toggle="modal" data-target="#myModal" data-modal-callback="reload">Войти</a></li>
                 {% endif %}
             </div></div></nav>
         <div class="container">
         <div class="row">
-            {% block content %}
-            {% endblock %}
-            </div>
-</div>
+            {% block content %}{% endblock %}
+            </div></div>
   <!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal fade" id="myModal" tabindex="1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
 

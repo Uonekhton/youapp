@@ -66,7 +66,7 @@ class UserAdmin(BaseUserAdmin):
 
 
 class MyModelAdmin(AdminVideoMixin, admin.ModelAdmin):
-    list_display = ('user', 'price', 'date')
+    list_display = ('title', 'user', 'price', 'date')
     list_filter = ('price', 'user', 'date')
     ordering = ('date',)
 

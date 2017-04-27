@@ -32,6 +32,7 @@ class User(AbstractBaseUser):
 		max_length=255,
 		unique=True,)
 	balance = models.DecimalField(max_digits=2, decimal_places=0, default=0)
+	purchased = models.ManyToManyField('Movie', verbose_name='Купленные видео', blank=True)
 	first_name = models.CharField(verbose_name='Имя', max_length=50, blank=True)
 	last_name = models.CharField(verbose_name='Фамилия', max_length=50, blank=True)
 	is_active = models.BooleanField(verbose_name='Активный')
@@ -79,10 +80,11 @@ class Movie(models.Model):
 	video = EmbedVideoField(verbose_name='Ссылка')
 	price = models.DecimalField(max_digits=3, decimal_places=0, default=0, verbose_name='Цена')
 	date = models.DateTimeField(auto_now_add=True, verbose_name='Дата')
-	user = models.ForeignKey('User')
+	author = models.ForeignKey('User', verbose_name='Автор')
 	thumbnail = models.CharField(verbose_name='thumbnail_url', max_length=255, blank=True)
-	#purchased =
 	
+	def __str__(self):
+		return self.title
 
 	class Meta:
 		ordering = ['-date']

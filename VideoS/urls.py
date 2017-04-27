@@ -6,12 +6,14 @@ from django.conf.urls.static import static
 from registration.backends.hmac.views import RegistrationView
 from youapp.forms import MyCustomUserForm
 from youapp.views import index, wall, add_movie, play_movie, LogoutView
+import django.views.defaults
 
 
 urlpatterns = [
 	url(r'^$', index,  name='index'),
 	url(r'^admin/', admin.site.urls),
 	url(r'^logout/$', LogoutView.as_view(), name='logout'),
+	url(r'^404/$', django.views.defaults.page_not_found, ),
 	url(r'^accounts/register/$', RegistrationView.as_view(form_class=MyCustomUserForm), name='register',),
 	url(r'^accounts/', include('registration.backends.hmac.urls')),
 	url('^change-password/', auth_views.password_change, {

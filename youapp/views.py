@@ -12,30 +12,34 @@ from .models import Movie, User
 
 
 def index(request):
-	movie = Movie.objects.all()
-	return render(request, 'index.html', {'movie': movie})
-
-
-def wall(request, user_id):
-	movie = Movie.objects.filter(user=user_id)
+	movie = Movie.objects.all()[:12]
 	return render(request, 'wall.html', {'movie': movie})
 
 
-# Воспроизведение видео AIzaSyBNuds75Nnm16QKFGfFhLAQqEJlCuWn3a8
+def wall(request, user_id):
+	movie = Movie.objects.filter(author=user_id)
+	return render(request, 'wall.html', {'movie': movie})
+
+
 @login_required
 def play_movie(request, video_id):
 	movie = Movie.objects.get(id=video_id)
-	if request.user.balance >= movie.price:
-		user = User.objects.get(id=request.user.id)
-		user.balance = user.balance-movie.price
-		user.save()
-		user = movie.user
-		user.balance = user.balance+movie.price
-		user.save()
+	user = User.objects.get(id=request.user.id)
+	if request.user == movie.author:
+		return render(request, 'movie.html', {'movie': movie})
+	elif user.purchased.filter(pk=movie.pk).exists() == True:
 		return render(request, 'movie.html', {'movie': movie})
 	else:
-		error = 'На вашем счете недостаточно средств.'
-		return render(request, 'error.html', {'error': error})
+		if request.user.balance >= movie.price:
+			user.balance = user.balance-movie.price
+			user.save()
+			user = movie.author
+			user.balance = user.balance+movie.price
+			user.save()
+			return render(request, 'movie.html', {'movie': movie})
+		else:
+			error = 'На вашем счете недостаточно средств.'
+			return render(request, 'error.html', {'error': error})
 
 
 # Функция определяет какую ссылку вставил пользователь, и загружает по ней превью
@@ -66,7 +70,7 @@ def add_movie(request):
 		if form.is_valid():
 			user = User.objects.get(id=request.user.id)
 			form_valid = form.save(commit=False)
-			form_valid.user = user
+			form_valid.author = user
 			gg = thumb_down(form_valid.video)
 			form_valid.thumbnail = gg['thumb']
 			form_valid.title = gg['title']
@@ -86,3 +90,9 @@ class LogoutView(View):
 
 		return HttpResponseRedirect("/")
 
+
+def handler404(request):
+    response = render('404.html', {},
+                                  context_instance=RequestContext(request))
+    response.status_code = 404
+    return response

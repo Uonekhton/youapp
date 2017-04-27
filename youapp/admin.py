@@ -51,13 +51,13 @@ class UserAdmin(BaseUserAdmin):
     list_filter = ('is_admin', )
     fieldsets = (
         (None, {'fields': ('email', 'password')}),
-        ('Персональная информация', {'fields': ('first_name', 'last_name', 'balance')}),
+        ('Персональная информация', {'fields': ('first_name', 'last_name', 'balance', 'purchased')}),
         ('Доступ', {'fields': ('is_admin', 'is_active')})
     )
     add_fieldsets = (
         (None, {'classes': ('wide',),
                 'fields': ('email', 'password1', 'password2')}),
-                ('Персональная информация', {'fields': ('first_name', 'last_name',)}),
+                ('Персональная информация', {'fields': ('first_name', 'last_name', 'purchased')}),
                 ('Доступ', {'fields': ('is_admin', 'is_active')})
     )
     search_fields = ('email',)
@@ -66,8 +66,8 @@ class UserAdmin(BaseUserAdmin):
 
 
 class MyModelAdmin(AdminVideoMixin, admin.ModelAdmin):
-    list_display = ('title', 'user', 'price', 'date')
-    list_filter = ('price', 'user', 'date')
+    list_display = ('title', 'author', 'price', 'date')
+    list_filter = ('price', 'author', 'date')
     ordering = ('date',)
 
 

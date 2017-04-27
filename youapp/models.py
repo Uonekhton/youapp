@@ -31,7 +31,7 @@ class User(AbstractBaseUser):
 		verbose_name='email',
 		max_length=255,
 		unique=True,)
-	balance = models.DecimalField(max_digits=2, decimal_places=0, default=0)
+	balance = models.DecimalField(max_digits=99, decimal_places=2, default=0)
 	purchased = models.ManyToManyField('Movie', verbose_name='Купленные видео', blank=True)
 	first_name = models.CharField(verbose_name='Имя', max_length=50, blank=True)
 	last_name = models.CharField(verbose_name='Фамилия', max_length=50, blank=True)

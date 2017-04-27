@@ -11,7 +11,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'v6-o&fvd&-x$+9fqg6n**$nyobj1%brzl!7q2*h^-&lr^oz=@#'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1']
 
@@ -77,6 +77,13 @@ DATABASES = {
 	}
 }
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-snowflake',
+    }
+}
+
 
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
@@ -116,12 +123,15 @@ STATIC_URL = '/static/'
 # STATIC_ROOT = os.path.join('static')
 STATICFILES_DIRS = [
 	os.path.join(BASE_DIR, "static"),
-	'/home/ilya/PycharmProjects/VideoS/static/',
+	'/home/ilya/youapp/static/',
 ]
 MEDIA_URL = '/media/'
 
 # Количество роликов на одной странице
 PAGINATION_DEFAULT_PAGINATION = 12
+
+# Количество видео на главной странице
+INDEX_MOVIE = 12
 
 # Django registration
 ACCOUNT_ACTIVATION_DAYS = 7

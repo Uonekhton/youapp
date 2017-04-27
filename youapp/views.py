@@ -12,7 +12,7 @@ from .models import Movie, User
 
 
 def index(request):
-	movie = Movie.objects.all()[:12]
+	movie = Movie.objects.all()[:settings.INDEX_MOVIE]
 	return render(request, 'wall.html', {'movie': movie})
 
 
@@ -32,6 +32,7 @@ def play_movie(request, video_id):
 	else:
 		if request.user.balance >= movie.price:
 			user.balance = user.balance-movie.price
+			user.purchased.add(movie)
 			user.save()
 			user = movie.author
 			user.balance = user.balance+movie.price
@@ -44,14 +45,21 @@ def play_movie(request, video_id):
 
 # Функция определяет какую ссылку вставил пользователь, и загружает по ней превью
 def thumb_down(url):
-	if url.find('=') != -1:
-		url2 = 'http://img.youtube.com/vi/%s/mqdefault.jpg' % url.split('=')[1]
+	if url.find('t=') != -1:
+		name = url.split('=')[1].split('&t')
+		name = name[0]
+		url2 = 'http://img.youtube.com/vi/%s/mqdefault.jpg' % name
+	elif url.find('=') != -1:
 		name = url.split('=')[1]
+		url2 = 'http://img.youtube.com/vi/%s/mqdefault.jpg' % name
 	else:
-		url2 = 'http://img.youtube.com/vi/%s/mqdefault.jpg' % url.replace('https://youtu.be/', '')
 		name = url.replace('https://youtu.be/', '')
+		url2 = 'http://img.youtube.com/vi/%s/mqdefault.jpg' % name
 	url = requests.get(
-		'https://www.googleapis.com/youtube/v3/videos?part=snippet&fields=items(snippet(title))&id=%s&key=AIzaSyBlhjhmXF2M9ZhobNSSgWHloEn5TX2aceU' % name)
+		'https://www.googleapis.com/youtube/v3/videos?'
+		'part=snippet'
+		'&fields=items(snippet(title))'
+		'&id=%s&key=AIzaSyBlhjhmXF2M9ZhobNSSgWHloEn5TX2aceU' % name)
 	title = url.text.split('"title": "')[1].split('"\n')
 	name = ''.join(choice(ascii_uppercase) for i in range(5)) + name
 	h = httplib2.Http('.cache')
@@ -89,10 +97,3 @@ class LogoutView(View):
 		logout(request)
 
 		return HttpResponseRedirect("/")
-
-
-def handler404(request):
-    response = render('404.html', {},
-                                  context_instance=RequestContext(request))
-    response.status_code = 404
-    return response

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -24,17 +24,14 @@
             <div class="container">
             <div class="navbar-header">
                 <a href="{% url 'index' %}" class="navbar-brand">YouApp</a> </div>
-            <ul class="nav navbar-nav">
-                <li><a href="/">Главная</a></li>
-            </ul>
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-6">
                <ul class="nav navbar-nav navbar-right">
                    {% if user.is_authenticated %}
                    <li><a href="{% url 'add' %}"  data-toggle="modal" data-target="#myModal">Добавить видео</a></li>
+                   <li><a href="#">Баланс: {{ user.balance }}р.</a></li>
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ user.email }} <span class="caret"></span></a>
           <ul class="dropdown-menu">
-            <li><a href="#">Баланс: {{ user.balance }}</a></li>
             <li><a href="{% url 'wall' user_id=user.id %}">Мои видеозаписи</a></li>
             <li><a href="{% url 'change-password'%}"  data-toggle="modal" data-target="#myModal">Изменить пароль</a></li>
             <li role="separator" class="divider"></li>

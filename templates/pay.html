@@ -1,0 +1,16 @@
+{% block content %}
+{% load bootstrap3 %}
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="createComment_title">Вывод средств</h4>
+      </div>
+      <div class="modal-body">
+<form method="post" action="{% url 'pay-out' %}" class="form">
+{% csrf_token %}
+<dl class="register">
+{% bootstrap_field form.WMI_PAYMENT_AMOUNT %}
+</dl>
+<button type="submit" class="btn btn-primary">Вывести</button>
+</form>
+      </div>
+{% endblock %}

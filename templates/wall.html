@@ -1,13 +1,42 @@
-{% extends "base.html" %}
+﻿{% extends "base.html" %}
 {% load pagination_tags %}
 {% block content %}{% autopaginate movie %}
         {% for item in movie %}
-        <div class="col-xs-6 col-md-3"><div class="thumbnail">
-        {% if user.is_authenticated %}<a href="{% url 'movie' item.id %}" data-toggle="modal" data-target="#myModal"><img src="{{ item.thumbnail }}"></a>
-            <h6><b><a href="{% url 'movie' item.id %}" data-toggle="modal" data-target="#myModal">{{ item.title }}</a></b></h6>
-                {% else %}<a href="/accounts/login/" data-toggle="modal" data-target="#myModal"><img src="{{ item.thumbnail }}"></a>
-            <h6><b><a href="/accounts/login/" data-toggle="modal" data-target="#myModal">{{ item.title }}</a></b></h6>{% endif %}
-        </div></div>
-{% endfor %}
-    <div class="col-md-6 col-md-offset-3"><center>{% paginate %}</center></div>
+        <div class="col-lg-3 col-xs-6 block-thumb">
+        {% if user.is_authenticated %}
+            <div class="thumbnail-st">
+                {% if user.balance >= item.price %}
+                    <a href="{% url 'movie' item.id %}" data-toggle="modal" data-target="#myModal" title="{{ item.title }}" ><img src="{{ item.thumbnail }}"></a>
+                    {% else %}
+                    <a href="{% url 'movie' item.id %}" title="{{ item.title }}" ><img src="{{ item.thumbnail }}"></a>
+                    {% endif %}
+                <div class="caption">
+                    {% if user == item.author %}
+                        <a href="{% url 'delete' item.id %}" class="trash-a"><span class="trash glyphicon glyphicon-trash" title="Удалить" aria-hidden="true"></span></a>
+                    {% else %}
+                        {% if item in user.purchased.all %}
+                            <span class="title">Куплено</span>
+                        {% else %}
+                    <span class="title">Цена: {{ item.price| floatformat:"-2"  }}</span>
+                        {% endif %}
+                    {% endif %}
+                </div></div>
+            {% if user.balance >= item.price %}
+            <h6><b><a href="{% url 'movie' item.id %}" data-toggle="modal" data-target="#myModal">{{ item.title|slice:"69" }}</a></b></h6>
+                {% else %}
+                <h6><b><a href="{% url 'movie' item.id %}">{{ item.title|slice:"69" }}</a></b></h6>
+                {% endif %}
+            {% if user != item.author and item not in user.purchased.all %}
+                <hr class="hre">
+            {% endif %}
+        {% else %}
+            <div class="thumbnail-st"><a href="/accounts/login/" data-toggle="modal" data-target="#myModal" title="{{ item.title }}" ><img src="{{ item.thumbnail }}"></a>
+                <div class="caption">
+                    <span class="title">Цена: {{ item.price| floatformat:"-2"  }}</span>
+                </div></div>
+            <h6><b><a href="/accounts/login/" data-toggle="modal" data-target="#myModal">{{ item.title|slice:"69" }}</a></b></h6>
+        {% endif %}
+        </div>
+        {% endfor %}
+    <div class="col-md-offset-3"><center>{% paginate %}</center></div>
 {% endblock %}

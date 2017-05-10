@@ -2,20 +2,21 @@
 <html lang="ru">
   <head>
     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>YouApp</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ config.SITE_NAME }} | {{ config.SITE_DICT }}</title>
     {% load bootstrap3 %}
+      {% load static %}
     {% bootstrap_css %}
+      <link href="{% static 'css/style.css' %}" rel="stylesheet">
       <script src="{% bootstrap_jquery_url %}"></script>
       {% bootstrap_javascript %}
       <script type="text/javascript">
           $(document.body).on('hidden.bs.modal', function () {
-            $('#myModal').removeData('bs.modal')
+              $('#myModal').removeData('bs.modal');
           });
-
           $(document).on('hidden.bs.modal', function (e) {
               $(e.target).removeData('bs.modal');
+              location.reload();
           });
       </script>
   </head>
@@ -23,12 +24,19 @@
         <nav class="navbar navbar-default navbar-static-top">
             <div class="container">
             <div class="navbar-header">
-                <a href="{% url 'index' %}" class="navbar-brand">YouApp</a> </div>
+                <a href="{% url 'index' %}" class="navbar-brand">{{ config.SITE_NAME }}</a> </div>
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-6">
                <ul class="nav navbar-nav navbar-right">
                    {% if user.is_authenticated %}
                    <li><a href="{% url 'add' %}"  data-toggle="modal" data-target="#myModal">Добавить видео</a></li>
-                   <li><a href="#">Баланс: {{ user.balance }}р.</a></li>
+                       <li class="dropdown">
+                   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Баланс: {{ user.balance| floatformat:"-2" }}р.<span class="caret"></span></a>
+                       <ul class="dropdown-menu">
+                        <li><a href="{% url 'pay' %}" data-toggle="modal" data-target="#myModal">Пополнить</a></li>
+                        <li><a href="{% url 'pay-out' %}"  data-toggle="modal" data-target="#myModal">Вывести средства</a></li>
+                      </ul>
+                    </li>
+
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ user.email }} <span class="caret"></span></a>
           <ul class="dropdown-menu">
@@ -46,6 +54,7 @@
             </div></div></nav>
         <div class="container">
         <div class="row">
+        {% include 'message.html' %}
             {% block content %}{% endblock %}
             </div></div>
   <!-- Modal -->

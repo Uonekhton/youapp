@@ -5,7 +5,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from registration.backends.hmac.views import RegistrationView
 from youapp.forms import MyCustomUserForm
-from youapp.views import index, wall, add_movie, play_movie, LogoutView
+from youapp.views import index, wall, add_movie, play_movie, del_movie, LogoutView, pay, paid, fail, pay_out
 import django.views.defaults
 
 
@@ -24,6 +24,11 @@ urlpatterns = [
 	url('^password-reset/', auth_views.password_reset, {'template_name': 'password-reset.html'}, name='password-reset'),
 	url(r'^add$', add_movie,  name='add'),
 	url(r'^wall/(?P<user_id>\d+)/$', wall,  name='wall'),
-	url(r'^movie/(?P<video_id>\d+)/$', play_movie,  name='movie')
+	url(r'^movie/(?P<video_id>\d+)/$', play_movie,  name='movie'),
+	url(r'^delete/(?P<video_id>\d+)/$', del_movie,  name='delete'),
+	url(r'^pay/$', pay,  name='pay'),
+	url(r'^pay-out/$', pay_out,  name='pay-out'),
+	url(r'^paid/$', paid,  name='paid'),
+	url(r'^fail/$', fail,  name='fail'),
 
 ] + static(settings.STATIC_URL, document_root=settings.STATICFILES_DIRS)

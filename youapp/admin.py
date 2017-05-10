@@ -3,7 +3,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from embed_video.admin import AdminVideoMixin
-from .models import Movie
+from .models import Movie, Statement, Money
 
 from .models import User
 from django.contrib.auth import get_user_model
@@ -71,5 +71,13 @@ class MyModelAdmin(AdminVideoMixin, admin.ModelAdmin):
     ordering = ('date',)
 
 
+class StatementAdmin(admin.ModelAdmin):
+    list_display = ('user', 'score', 'date')
+    list_filter = ('user', 'score', 'date')
+    ordering = ('date',)
+
+
 admin.site.register(Movie, MyModelAdmin)
 admin.site.register(User, UserAdmin)
+admin.site.register(Money)
+admin.site.register(Statement, StatementAdmin)

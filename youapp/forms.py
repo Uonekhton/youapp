@@ -1,7 +1,8 @@
 from django.forms import ModelForm
 from django import forms
 from registration.forms import RegistrationForm
-from .models import User, Movie
+from .models import User, Movie, Statement
+from constance import config
 
 
 class MyCustomUserForm(RegistrationForm):
@@ -20,4 +21,27 @@ class MovieForm(ModelForm):
                                            'required': ''}),
             'price': forms.NumberInput(attrs={'class': 'form-control', 'rows': '1', 'style': 'resize:none',
                                               'required': ''}),
+        }
+
+
+class PayOutForm(ModelForm):
+    class Meta:
+        model = Statement
+        fields = ('balance', 'score', 'money')
+        widgets = {
+            'balance': forms.NumberInput(attrs={'required': '', 'min': config.MIN_OUT, 'value': config.MIN_OUT}),
+        }
+
+class Pay(forms.Form):
+    WMI_MERCHANT_ID = forms.NumberInput()
+    WMI_PAYMENT_AMOUNT = forms.NumberInput()
+    WMI_CURRENCY_ID = forms.NumberInput()
+    WMI_SUCCESS_URL = forms.CharField(max_length=100)
+    WMI_FAIL_URL = forms.CharField(max_length=100)
+    WMI_CULTURE_ID = forms.CharField(max_length=10)
+    
+    class Meta:
+        fields = ('WMI_PAYMENT_AMOUNT', )
+        widgets = {
+            'WMI_PAYMENT_AMOUNT': forms.NumberInput(attrs={'required': '', 'value': '100'}),
         }

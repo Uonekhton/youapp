@@ -25,6 +25,8 @@ INSTALLED_APPS = [
 	'django.contrib.sessions',
 	'django.contrib.messages',
 	'django.contrib.staticfiles',
+	'constance',
+	'constance.backends.database',
 	'bootstrap3',
 	'pagination_bootstrap',
 	'registration',
@@ -59,6 +61,7 @@ TEMPLATES = [
 				"django.template.context_processors.i18n",
 				"django.template.context_processors.media",
 				'django.contrib.messages.context_processors.messages',
+				'constance.context_processors.config',
 			],
 		},
 	},
@@ -78,10 +81,10 @@ DATABASES = {
 }
 
 CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-        'LOCATION': 'unique-snowflake',
-    }
+	'default': {
+		'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+		'LOCATION': 'unique-snowflake',
+	}
 }
 
 
@@ -120,18 +123,28 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 
 STATIC_URL = '/static/'
-# STATIC_ROOT = os.path.join('static')
+#STATIC_ROOT = os.path.join('static')
 STATICFILES_DIRS = [
 	os.path.join(BASE_DIR, "static"),
-	'/home/ilya/youapp/static/',
+	'D:\\youapp-master\\static\\',
 ]
 MEDIA_URL = '/media/'
+MESSAGE_STORAGE = 'django.contrib.messages.storage.cookie.CookieStorage'
 
-# Количество роликов на одной странице
-PAGINATION_DEFAULT_PAGINATION = 12
-
-# Количество видео на главной странице
-INDEX_MOVIE = 12
+CONSTANCE_IGNORE_ADMIN_VERSION_CHECK = True
+CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
+CONSTANCE_DATABASE_PREFIX = 'constance:myproject:'
+CONSTANCE_CONFIG = {
+	'SITE_NAME': ('YouApp', 'Название сайта ', str),
+	'SITE_DICT': ('Продажа видео', 'Краткое описание сайта ', str),
+	'ID_WO': ('150101355894', 'Идентификатор магазина в Wallet One', str),
+	'PAGINATION_DEFAULT_PAGINATION': (12, 'Количество роликов на стене ', int),
+	'INDEX_MOVIE': (12, 'Количество роликов на главной странице', int),
+	'MIN_OUT': (10, 'Минимальная сумма вывода ', int),
+	'EMAIL_OUT': ('khramtsov.ilya@gmail.com', 'Почта куда отправлять заявки', str),
+	'COEFFICIENT': (1.2 , 'Коэффициент умножения', float),
+	
+}
 
 # Django registration
 ACCOUNT_ACTIVATION_DAYS = 7

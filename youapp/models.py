@@ -2,7 +2,8 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.core.mail import send_mail
 from embed_video.fields import EmbedVideoField
-
+from decimal import *
+from constance import config
 
 class UserManager(BaseUserManager):
 	def create_user(self, email, password=None):
@@ -21,11 +22,14 @@ class UserManager(BaseUserManager):
 			email,
 			password=password,
 		)
+		user.is_active = True
 		user.is_admin = True
+		user.is_superuser = True
 		user.save(using=self._db)
 		return user
 
 
+# Модель пользователя
 class User(AbstractBaseUser):
 	email = models.EmailField(
 		verbose_name='email',
@@ -33,10 +37,12 @@ class User(AbstractBaseUser):
 		unique=True,)
 	balance = models.DecimalField(max_digits=99, decimal_places=2, default=0)
 	purchased = models.ManyToManyField('Movie', verbose_name='Купленные видео', blank=True)
+	number = models.IntegerField(verbose_name='Номер заказа', blank=True, null=True)
 	first_name = models.CharField(verbose_name='Имя', max_length=50, blank=True)
 	last_name = models.CharField(verbose_name='Фамилия', max_length=50, blank=True)
-	is_active = models.BooleanField(verbose_name='Активный')
+	is_active = models.BooleanField(verbose_name='Активный', default=False)
 	is_admin = models.BooleanField(default=False, verbose_name='Администратор')
+	is_superuser = models.BooleanField(default=False, verbose_name='Супер Администратор')
 
 	objects = UserManager()
 
@@ -75,10 +81,11 @@ class User(AbstractBaseUser):
 		verbose_name_plural = 'Пользователи'
 
 
+# Модель видео
 class Movie(models.Model):
 	title = models.CharField(verbose_name='Название', max_length=100)
 	video = EmbedVideoField(verbose_name='Ссылка')
-	price = models.DecimalField(max_digits=3, decimal_places=0, default=0, verbose_name='Цена')
+	price = models.DecimalField(max_digits=99, decimal_places=2, default=0, verbose_name='Цена')
 	date = models.DateTimeField(auto_now_add=True, verbose_name='Дата')
 	author = models.ForeignKey('User', verbose_name='Автор')
 	thumbnail = models.CharField(verbose_name='thumbnail_url', max_length=255, blank=True)
@@ -90,3 +97,31 @@ class Movie(models.Model):
 		ordering = ['-date']
 		verbose_name = 'Видео'
 		verbose_name_plural = 'Видео'
+
+
+class Statement(models.Model):
+	balance = models.DecimalField(max_digits=99, decimal_places=2,
+								verbose_name='Сумма списания',
+								help_text='Минимальная сумма вывода: %s' % config.MIN_OUT)
+	score = models.CharField(verbose_name='Счет зачисления', max_length=45)
+	date = models.DateTimeField(auto_now_add=True, verbose_name='Дата', blank=True)
+	user = models.ForeignKey('User', verbose_name='Пользователь')
+	money = models.ForeignKey('Money', verbose_name='Способ вывода')
+	def __str__(self):
+		return self.score
+	
+	class Meta:
+		ordering = ['-date']
+		verbose_name = 'Заявка на вывод'
+		verbose_name_plural = 'Заявки на вывод'
+
+
+class Money(models.Model):
+	title = models.CharField(max_length=100)
+	
+	def __str__(self):
+		return self.title
+	
+	class Meta:
+		verbose_name = 'Способ вывода'
+		verbose_name_plural = 'Способы вывода'
